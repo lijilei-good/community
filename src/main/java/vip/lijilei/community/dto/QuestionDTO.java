@@ -1,6 +1,7 @@
-package vip.lijilei.community.model;
+package vip.lijilei.community.dto;
 
 import lombok.Data;
+import vip.lijilei.community.model.User;
 
 /**
  * @author 李吉磊
@@ -8,7 +9,7 @@ import lombok.Data;
  * @Date: Create in 2020/2/4
  */
 @Data
-public class Question {
+public class QuestionDTO {
     private Integer id;
     private String title;
     private String description;
@@ -19,4 +20,5 @@ public class Question {
     private Integer viewCount;
     private Integer likeCount;
     private String tag;
+    private User user;
 }
