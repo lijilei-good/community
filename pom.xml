@@ -36,6 +36,12 @@
 		</dependency>
 
 
+		<!--热部署配置-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
         <!--okHttp-->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -73,6 +79,11 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>RELEASE</version>
 		</dependency>
 	</dependencies>
 
