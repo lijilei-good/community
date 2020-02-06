@@ -3,21 +3,21 @@
 <head>
     <title>码匠社区</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <script src="js/jquery-3.4.1.min.js"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="~{navigation::nav}"></div>
 <div class="row" style="margin: 30px">
     <div class="media col-lg-9" >
-        <h3>发现</h3>
+        <h3><span th:text="${sectionName}"></span></h3>
         <hr>
         <div th:each="question: ${questions}">
             <div class="media-left">
                 <a href="#">
-                    <img style="width: 39px" class="media-object" th:attr="src=${question.avatarUrl}"  >
+                    <img style="width: 39px" class="media-object" th:src="${question.user.avatarUrl}"  >
                 </a>
             </div>
             <div class="media-body" >
@@ -32,11 +32,17 @@
             </div>
             <hr>
         </div>
-
     </div>
     <!--右边的宣传/热点竖栏-->
-    <div class="media col-lg-3">
-        <h3>热门话题</h3>
+    <div class="media col-lg-3 list-group">
+
+            <a href="/profile/questions" th:class="${sectionName == '我的问题'} ? 'list-group-item active' : 'list-group-item'">
+                我的问题
+            </a>
+            <a href="/profile/reply" th:class="${sectionName == '最新回复'} ? 'list-group-item active' : 'list-group-item'">
+                <span class="badge">14</span>
+                最新回复
+            </a>
     </div>
 </div>
 

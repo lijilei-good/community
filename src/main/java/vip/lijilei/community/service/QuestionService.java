@@ -12,7 +12,6 @@ import vip.lijilei.community.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author 李吉磊
  * @Company http://www.lijilei.vip
@@ -26,6 +25,8 @@ public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+
 
     /**
      * 使用问题的创建者id,查询user表,得到这个用户的全部信息
@@ -44,4 +45,16 @@ public class QuestionService {
         return questionDTOList;
     }
 
+    public List<QuestionDTO> findByUserId(Integer id) {
+        List<Question> questionList = questionMapper.findByUserId(id);
+        ArrayList<QuestionDTO> questionDTOList = new ArrayList<>();
+        for (Question question : questionList) {
+            User user = userMapper.findById(question.getCreator());
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question, questionDTO);
+            questionDTO.setUser(user);
+            questionDTOList.add(questionDTO);
+        }
+        return questionDTOList;
+    }
 }

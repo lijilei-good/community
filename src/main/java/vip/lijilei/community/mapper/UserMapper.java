@@ -23,4 +23,7 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{creator}")
     User findById(Integer creator);
+
+    @Select("select * from user where account_id = #{accountId}")
+    User findByAccountId(String accountId);
 }

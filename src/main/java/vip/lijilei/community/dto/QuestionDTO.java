@@ -20,5 +20,6 @@ public class QuestionDTO {
     private Integer viewCount;
     private Integer likeCount;
     private String tag;
+    private String avatarUrl = "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=264175563,1523946490&fm=26&gp=0.jpg";
     private User user;
 }

@@ -56,20 +56,27 @@ public class AuthorizeController {
         accessTokenDTO.setRedirect_uri(redirectUri);
         String token = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(token);
-        if (githubUser != null){
-            // 登录成功,则把该用户信息写入到数据库持久化存储
-            User user = new User();
-            String communityToken = UUID.randomUUID().toString();
-            user.setToken(communityToken);
-            user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setName(githubUser.getName());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(System.currentTimeMillis());
-            user.setAvatarUrl(githubUser.getAvatarUrl());
-            //把这个登录的人的信息存入到数据库中
-            userMapper.insert(user);
-            response.addCookie(new Cookie("token",communityToken));
-            return "redirect:/";
+        // 判断数据库是否有该用户
+        if (githubUser != null ){
+            User dbUser = userMapper.findByAccountId(String.valueOf(githubUser.getId()));
+            if(dbUser != null){
+                response.addCookie(new Cookie("token",dbUser.getToken()));
+                return "redirect:/";
+            }else{
+                // 登录成功,则把该用户信息写入到数据库持久化存储
+                User user = new User();
+                String communityToken = UUID.randomUUID().toString();
+                user.setToken(communityToken);
+                user.setAccountId(String.valueOf(githubUser.getId()));
+                user.setName(githubUser.getName());
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(System.currentTimeMillis());
+                user.setAvatarUrl(githubUser.getAvatarUrl());
+                //把这个登录的人的信息存入到数据库中
+                userMapper.insert(user);
+                response.addCookie(new Cookie("token",communityToken));
+                return "redirect:/";
+            }
         }else{
             // 登录失败
             return "redirect:/";

@@ -3,6 +3,7 @@ package vip.lijilei.community.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import vip.lijilei.community.dto.QuestionDTO;
 import vip.lijilei.community.model.Question;
 
 import java.util.List;
@@ -21,4 +22,7 @@ public interface QuestionMapper {
 
     @Select("select * from question")
     List<Question> findAll();
+
+    @Select("select * from question where creator = #{userId}")
+    List<Question> findByUserId(Integer userId);
 }
