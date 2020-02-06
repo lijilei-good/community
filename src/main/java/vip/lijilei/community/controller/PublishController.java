@@ -7,11 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import vip.lijilei.community.mapper.QuestionMapper;
-import vip.lijilei.community.mapper.UserMapper;
 import vip.lijilei.community.model.Question;
 import vip.lijilei.community.model.User;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -21,9 +19,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class PublishController {
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private QuestionMapper questionMapper;
@@ -40,18 +35,8 @@ public class PublishController {
                           HttpServletRequest request,
                           Model model){
 
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null){
-            for (Cookie cookie : cookies) {
-                if(cookie.getName().equals("token")){
-                    user = userMapper.selectBytoken(cookie.getValue());
-                    request.getSession().setAttribute("user",user);
-                    break;
-                }
-            }
-        }
-
+        // 配置了拦截器,统一在拦截器验证用户是否登录,并的拦截器里面吧user设置到session里面
+        User user = (User)request.getSession().getAttribute("user");
         if(user == null){
             model.addAttribute("error","用户未登录");
             return "publish";
