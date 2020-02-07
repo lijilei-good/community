@@ -20,11 +20,11 @@
                     <img style="width: 39px" class="media-object" th:attr="src=${question.avatarUrl}"  >
                 </a>
             </div>
-            <div class="media-body" >
-                <h4 class="media-heading" th:text="${question.title}"></h4>
-                <span th:text="${question.description}"></span>
+            <div class="media-body" onclick="" >
+                <a  th:href="@{'/question/'+${question.id}}">
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
+                </a>
                 <span style="font-size: 12px; font-weight: normal; color: #999;">
-                <br>
                 <span th:text="${question.commentCount}"></span>个评论 •
                 <span th:text="${question.viewCount}"></span>次浏览 •
                  <span th:text="${#calendars.format(question.gmtCreate,'yyyy-MM-dd HH:')}"></span>

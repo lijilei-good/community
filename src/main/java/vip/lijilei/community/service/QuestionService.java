@@ -7,6 +7,7 @@ import vip.lijilei.community.dto.QuestionDTO;
 import vip.lijilei.community.mapper.QuestionMapper;
 import vip.lijilei.community.mapper.UserMapper;
 import vip.lijilei.community.model.Question;
+import vip.lijilei.community.model.QuestionExample;
 import vip.lijilei.community.model.User;
 
 import java.util.ArrayList;
@@ -34,9 +35,9 @@ public class QuestionService {
      */
     public List<QuestionDTO> list(){
         ArrayList<QuestionDTO> questionDTOList = new ArrayList<>();
-        List<Question> questionList = questionMapper.findAll();
+        List<Question> questionList = questionMapper.selectByExample(new QuestionExample());
         for (Question question : questionList) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
@@ -46,15 +47,32 @@ public class QuestionService {
     }
 
     public List<QuestionDTO> findByUserId(Integer id) {
-        List<Question> questionList = questionMapper.findByUserId(id);
         ArrayList<QuestionDTO> questionDTOList = new ArrayList<>();
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(id);
+        List<Question> questionList = questionMapper.selectByExample(example);
         for (Question question : questionList) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
         return questionDTOList;
+    }
+
+    /**
+     * 根据问题的id查出这个问题的全部信息及作者信息
+     * @param id
+     * @return
+     */
+    public QuestionDTO findByQuestionId(Integer id){
+        Question question = questionMapper.selectByPrimaryKey(id);
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);
+        questionDTO.setUser(user);
+        return questionDTO;
     }
 }

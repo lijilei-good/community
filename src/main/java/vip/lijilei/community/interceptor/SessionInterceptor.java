@@ -6,10 +6,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import vip.lijilei.community.mapper.UserMapper;
 import vip.lijilei.community.model.User;
+import vip.lijilei.community.model.UserExample;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author 李吉磊
@@ -28,8 +30,11 @@ public class SessionInterceptor implements HandlerInterceptor {
         if (cookies != null){
             for (Cookie cookie : cookies) {
                 if(cookie.getName().equals("token")){
-                    User user = userMapper.selectBytoken(cookie.getValue());
-                    request.getSession().setAttribute("user",user);
+                    UserExample example = new UserExample();
+                    example.createCriteria()
+                            .andTokenEqualTo(cookie.getValue());
+                    List<User> users = userMapper.selectByExample(example);
+                    request.getSession().setAttribute("user",users.get(0));
                     break;
                 }
             }

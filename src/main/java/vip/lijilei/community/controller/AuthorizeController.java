@@ -9,10 +9,13 @@ import vip.lijilei.community.dto.AccessTokenDTO;
 import vip.lijilei.community.dto.GithubUser;
 import vip.lijilei.community.mapper.UserMapper;
 import vip.lijilei.community.model.User;
+import vip.lijilei.community.model.UserExample;
 import vip.lijilei.community.provider.GithubProvider;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -58,9 +61,11 @@ public class AuthorizeController {
         GithubUser githubUser = githubProvider.getUser(token);
         // 判断数据库是否有该用户
         if (githubUser != null ){
-            User dbUser = userMapper.findByAccountId(String.valueOf(githubUser.getId()));
-            if(dbUser != null){
-                response.addCookie(new Cookie("token",dbUser.getToken()));
+            UserExample example = new UserExample();
+            example.createCriteria().andAccountIdEqualTo(String.valueOf(githubUser.getId()));
+            List<User> users = userMapper.selectByExample(example);
+            if(users.size() != 0){
+                response.addCookie(new Cookie("token",users.get(0).getToken()));
                 return "redirect:/";
             }else{
                 // 登录成功,则把该用户信息写入到数据库持久化存储
@@ -81,6 +86,15 @@ public class AuthorizeController {
             // 登录失败
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/quit")
+    public String quit(HttpServletRequest request, HttpServletResponse response){
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        request.getSession().removeAttribute("user");
+        return "redirect:/";
     }
 
 }

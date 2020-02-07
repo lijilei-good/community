@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import vip.lijilei.community.mapper.QuestionMapper;
 import vip.lijilei.community.model.Question;
+import vip.lijilei.community.model.QuestionExample;
 import vip.lijilei.community.model.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,12 +50,35 @@ public class PublishController {
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(System.currentTimeMillis());
             question.setCreator(user.getId());
-            questionMapper.create(question);
+            questionMapper.insert(question);
             return "redirect:/";
         }
-
-
     }
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id")String id, Model model){
+        Question question = questionMapper.selectByPrimaryKey(Integer.parseInt(id));
+        model.addAttribute("question", question);
+        return "/publish_edit";
+    }
+
+    @PostMapping("/publishUpdate")
+    public String publishUpdate(@Param("title")String title,
+                                @Param("description")String description,
+                                @Param("tag")String tag,
+                                @Param("id")String id){
+        Question question = new Question();
+        question.setTag(tag);
+        question.setTitle(title);
+        question.setDescription(description);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andIdEqualTo(Integer.parseInt(id));
+        questionMapper.updateByExampleSelective(question, example);
+        return "redirect:/";
+    }
+
+
 }
 
 
