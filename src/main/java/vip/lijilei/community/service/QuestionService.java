@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vip.lijilei.community.dto.QuestionDTO;
+import vip.lijilei.community.exception.CustomizeException;
 import vip.lijilei.community.mapper.QuestionMapper;
 import vip.lijilei.community.mapper.UserMapper;
 import vip.lijilei.community.model.Question;
@@ -69,10 +70,22 @@ public class QuestionService {
      */
     public QuestionDTO findByQuestionId(Integer id){
         Question question = questionMapper.selectByPrimaryKey(id);
+        if(question == null){
+            throw new CustomizeException("你找的问题不存在了，换个试试！！！");
+        }
         User user = userMapper.selectByPrimaryKey(question.getCreator());
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public void incView(int i) {
+        Question question = questionMapper.selectByPrimaryKey(i);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andIdEqualTo(i);
+        question.setViewCount(question.getViewCount()+1);
+        questionMapper.updateByExampleSelective(question, example);
     }
 }
