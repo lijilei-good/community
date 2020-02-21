@@ -50,6 +50,9 @@ public class PublishController {
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(System.currentTimeMillis());
             question.setCreator(user.getId());
+            question.setViewCount(0);
+            question.setCommentCount(0);
+            question.setLikeCount(0);
             questionMapper.insert(question);
             return "redirect:/";
         }
@@ -71,6 +74,7 @@ public class PublishController {
         question.setTag(tag);
         question.setTitle(title);
         question.setDescription(description);
+
         QuestionExample example = new QuestionExample();
         example.createCriteria()
                 .andIdEqualTo(Integer.parseInt(id));
